@@ -107,8 +107,8 @@ class MainActivity : AppCompatActivity() {
         val unitsTextBounds = Rect()
         unitsPaint.getTextBounds(units, 0, units.length, unitsTextBounds)
         val width: Int =
-            if (textBounds.width() > unitsTextBounds.width()) textBounds.width() else
-                unitsTextBounds.width()
+            //if (textBounds.width() > unitsTextBounds.width()) textBounds.width() else
+                textBounds.width()
         val bitmap = Bitmap.createBitmap(width + 5, 90, Bitmap.Config.ARGB_8888 )
         val canvas = Canvas(bitmap)
         canvas.drawText(speed, (width / 2+3 ).toFloat(), 46F, paint)
