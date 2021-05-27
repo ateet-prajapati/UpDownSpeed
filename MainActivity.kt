@@ -4,10 +4,6 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Rect
 import android.graphics.drawable.Icon
 import android.os.Bundle
 import android.os.Handler
@@ -16,6 +12,8 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.updown.databinding.UpdownFragmentBinding
 import android.app.PendingIntent
+import android.graphics.*
+import android.os.Build
 import android.util.Log
 
 
@@ -79,6 +77,7 @@ class MainActivity : AppCompatActivity() {
 
         val bitmap = createBitmapFromString("${total.first}",total.second)
         val icon = Icon.createWithBitmap(bitmap)
+        binding.img.setImageBitmap(bitmap)
         mBuilder.setSmallIcon(icon)
         mBuilder.setContentText("${binding.First.text.trim()} \t ${ binding.Second.text.trim()}")
         // mBuilder.setSmallIcon(R.drawable.ic_launcher_background)
@@ -94,25 +93,31 @@ class MainActivity : AppCompatActivity() {
     }
     private fun createBitmapFromString(speed: String, units: String): Bitmap? {
         Log.v(TAG,speed)
+        val pixels = resources.getDimensionPixelSize(R.dimen.dp_24)
         val paint = Paint()
+        //paint.isFakeBoldText = true
+        paint.typeface = Typeface.DEFAULT_BOLD//create(Typeface.DEFAULT,800,false)
         paint.isAntiAlias = true
-        paint.textSize = 50F
+        paint.letterSpacing = -0.1f
+        paint.textSize = pixels*0.65F
         paint.textAlign = Paint.Align.CENTER
         val unitsPaint = Paint()
         unitsPaint.isAntiAlias = true
-        unitsPaint.textSize = 30F // size is in pixels
+        unitsPaint.textSize = pixels*0.45F // size is in pixels
         unitsPaint.textAlign =Paint.Align.CENTER
+        unitsPaint.typeface = Typeface.DEFAULT_BOLD
         val textBounds = Rect()
         paint.getTextBounds(speed, 0, speed.length, textBounds)
         val unitsTextBounds = Rect()
         unitsPaint.getTextBounds(units, 0, units.length, unitsTextBounds)
         val width: Int =
-            //if (textBounds.width() > unitsTextBounds.width()) textBounds.width() else
-                textBounds.width()
-        val bitmap = Bitmap.createBitmap(width + 5, 90, Bitmap.Config.ARGB_8888 )
+            if (textBounds.width() > unitsTextBounds.width()) textBounds.width() else unitsTextBounds.width()
+        val bitmap = Bitmap.createBitmap(pixels, pixels, Bitmap.Config.ARGB_8888 )
         val canvas = Canvas(bitmap)
-        canvas.drawText(speed, (width / 2+3 ).toFloat(), 46F, paint)
-        canvas.drawText(units, (width / 2).toFloat(), 80F, unitsPaint)
+        //canvas.drawColor(R.color.purple_500)
+        canvas.drawText(speed, pixels/2f, pixels*0.6F, paint)
+        canvas.drawText(units, pixels/2f, pixels.toFloat(), unitsPaint)
+
         return bitmap
     }
 
